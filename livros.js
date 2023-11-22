@@ -37,7 +37,7 @@ const livros = [
 ]
 
 //GET 
-function mostraLivros (res) {
+function mostraLivros (req, res) {
     res.json(livros)
 }
 
@@ -53,7 +53,7 @@ function adicionaLivro (req, res) {
     }
 
     livros.push(livro);
-    res.json(livro);
+    res.json(livros);
 }
 
 // porta
