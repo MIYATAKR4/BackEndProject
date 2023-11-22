@@ -1,16 +1,17 @@
 const { v4: uuidv4 } = require('uuid'); // Importando o uuidv4 para gerar um id aleatório
 const express = require('express'); // Importando o express
 const router = express.Router(); // Importando o router do express
-
 const app = express(); // Iniciando o express
+
 app.use(express.json()); // Usando o express para trabalhar com json
+
 const porta = 3333; // Definindo a porta padrão
 
 // Criando uma lista de livros
 const livros = [
     {
         id: '1',
-        nome: "Retalhos ",
+        nome: "Retalhos",
         imagem: "https://i.postimg.cc/NMf5W3Qf/image.jpg",
         descricao: "Thompson retrata sua própria história, da infância até o início da vida adulta, numa cidadezinha de Wisconsin, no centro dos Estados Unidos, que parece estar sempre coberta pela neve.",
         citacao: "Debaixo d'água, somos dois afogados, nossos corpos enroscados um no outro. Mas, ao emergir, nós apenas boiamos, e somos afastados pela correnteza até ficarmos à deriva em paralelo, mas nunca juntos.",
@@ -42,7 +43,7 @@ function mostraLivros (req, res) {
 }
 
 //POST
-function adicionaLivro (req, res) {
+function adicionaLivros (req, res) {
     const livro = {
         id: uuidv4(),
         nome: req.body.nome,
@@ -56,6 +57,47 @@ function adicionaLivro (req, res) {
     res.json(livros);
 }
 
+//PATCH
+function atualizaLivros (req, res) {
+    function encontraLivro(livro) {
+        if (livro.id === req.params.id) {
+            return livro;
+        }
+    }
+
+    const livroEncontrado = livros.find(encontraLivro);
+
+    if (req.body.nome) {
+        livroEncontrado.nome = req.body.nome;
+    }
+    if (req.body.imagem) {
+        livroEncontrado.imagem = req.body.imagem;
+    }
+    if (req.body.descricao) {
+        livroEncontrado.descricao = req.body.descricao;
+    }
+    if (req.body.citacao) {
+        livroEncontrado.citacao = req.body.citacao;
+    }
+    if (req.body.autor) {
+        livroEncontrado.autor = req.body.autor;
+    }
+
+    res.json(livros);
+}
+
+//DELETE
+function deletaLivros (req, res) {
+    function encontraLivro(livro) {
+        if (livro.id !== req.params.id) {
+            return livro;
+        }
+    }
+
+    const livrosRemanescentes = livros.filter(encontraLivro);
+    res.json(livrosRemanescentes);
+}
+
 // porta
 function mostraPorta () {
     console.log(`Servidor rodando na porta ${porta}`);
@@ -63,5 +105,8 @@ function mostraPorta () {
 
 
 app.use(router.get('/livros', mostraLivros)); // Rota para mostrar os livros
-app.use(router.post('/livros', adicionaLivro)); // Rota para adicionar um livro
+app.use(router.post('/livros', adicionaLivros)); // Rota para adicionar um livro
+app.use(router.patch('/livros/:id', atualizaLivros)); // Rota para atualizar um livro
+app.use(router.delete('/livros/:id', deletaLivros)); // Rota para deletar um livro
+
 app.listen(porta, mostraPorta); // Iniciando o servidor
