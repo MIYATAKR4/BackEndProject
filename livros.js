@@ -1,16 +1,14 @@
 const express = require('express'); // Importando o express
 const router = express.Router(); // Importando o router do express
+const cors = require('cors'); // Importando o cors, para consumir a api no front-end
 const app = express(); // Iniciando o express
-app.use(express.json()); // Usando o express para trabalhar com json
-
-
 const connectDB = require('./database'); // Importando o connectDB do database.js
-connectDB(); // Conectando ao banco de dados
-
 const Livro = require('./livroModel'); // Importando o Livro do models/Livro.js
-
-
 const porta = 3333; // Definindo a porta padrão
+
+connectDB(); // Conectando ao banco de dados
+app.use(express.json()); // Usando o express para trabalhar com json
+app.use(cors()); // Usando o cors
 
 //GET 
 async function mostraLivros (req, res) {
